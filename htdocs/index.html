@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <title>Whatsapp API</title>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <script src="./jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+    <script src="./bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <div class="mt-5 px-5">
+        <h1 class="text-center">Whatsapp API</h1>
+        <div class="container">
+            <div class="row text-center">
+                <div class="form-group">
+                    <button type="button" class="btn btn-primary" onclick="open_qr_code()">Open QR Code</button>
+                    <button type="button" class="btn btn-success" onclick="show_qr_code()">Show QR</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-5 px-5">
+        <form action="http://127.0.0.1:5000/show_qr" method="post">
+            <input type="text" name="email" id="email" value="admin@gmail.com" class="form-control mb-3">
+            <input type="text" name="password" id="password" value="123" class="form-control mb-3">
+            <input type="text" name="mobile" id="mobile" maxlength="10" class="form-control mb-3"
+                placeholder="Enter mobile number">
+            <button type="submit" class="btn btn-primary" name="submit">Send Message</button>
+        </form>
+    </div>
+    <br>
+    <br>
+
+    <div class="px-5 text-center">
+        <div id="show_img">
+        </div>
+
+        <canvas id="qr" height="150" width="150"></canvas>
+    </div>
+    <br>
+    <br>
+
+
+
+    <script src="qrious.min.js"></script>
+    <script>
+
+        function open_qr_code() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var mobile = document.getElementById('mobile').value;
+
+            jQuery.ajax({
+                type: "POST",
+                url: "http://127.0.0.1:5000/open_qr",
+                data: "email=" + email + "&password=" + password + "&mobile=" + mobile,
+                dataType: 'html',
+                success: function (resp) {
+                    console.log(resp);
+                }
+            });
+        }
+
+    </script>
+
+
+    <script>
+        function show_qr_code() {
+            //    console.log("showing data");
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var mobile = document.getElementById('mobile').value;
+            jQuery.ajax({
+                url: "http://127.0.0.1:5000/show_qr",
+                type: "POST",
+                data: "email=" + email + "&password=" + password + "&mobile=" + mobile,
+                dataType: "html",
+                success: function (resp) {
+                    console.log(resp);
+                    var obj = JSON.parse(resp);
+                    if (obj.qr != "") {
+                        var qr = new QRious({
+                            element: document.getElementById('qr'),
+                            value: obj.qr
+                        });
+                        qr.size = 300;
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
