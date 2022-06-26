@@ -100,11 +100,11 @@ app.post("/open_qr", function (req, res) {
       if (result.length > 0) {
          console.log(result.length);
          client.initialize();
-         res.end(JSON.stringify(response_object));
+         res.send(JSON.stringify(response_object));
+      } else {
+         res.send({ "data": "Error" });
       }
    });
-
-
 
 });
 
@@ -113,20 +113,36 @@ app.get("/", function (req, res) {
 });
 
 app.post("/show_qr", function (req, res) {
-   res.send(JSON.stringify(response_object));
+   var email1 = req.body.email;
+   var password1 = req.body.password;
+   console.log(email1, password1);
+   con.query("SELECT * FROM user where email='" + email1 + "' and password='" + password1 + "'", function (err, result, fields) {
+      if (err) throw err;
+      if (result.length > 0) {
+         res.send(JSON.stringify(response_object));
+      } else {
+         res.send({ "data": "Error" });
+      }
+   });
 });
 
-
-
-
 app.post("/send_message", function (req, res) {
+
+   var email1 = req.body.email;
+   var password1 = req.body.password;
    var mobile = req.body.mobile;
    var form_msg = req.body.form_msg;
-   console.log(mobile);
-   number = "91" + mobile + '@c.us';
-   console.log(number);
-   client.sendMessage(number, form_msg);
-   res.send({ "Data": number });
+   console.log(email1, password1, mobile, form_msg);
+   con.query("SELECT * FROM user where email='" + email1 + "' and password='" + password1 + "'", function (err, result, fields) {
+      if (err) throw err;
+      if (result.length > 0) {
+         number = "91" + mobile + '@c.us';
+         console.log(number);
+         client.sendMessage(number, form_msg);
+         res.send({ "Data": number });
+      }
+   });
+
 });
 
 
