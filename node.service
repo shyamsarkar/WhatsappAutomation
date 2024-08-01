@@ -1,0 +1,16 @@
+[Unit]
+Description=My Node.js Application
+After=network.target
+
+[Service]
+ExecStart=/home/ubuntu/.asdf/shims/npm start
+Restart=always
+User=ubuntu
+Group=ubuntu
+Environment=PATH=/home/ubuntu/.asdf/shims:/home/ubuntu/.asdf/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+WorkingDirectory=/var/www/leave_management/frontend/current
+StandardOutput=append:/var/log/node-frontend.log
+StandardError=append:/var/log/node-frontend-error.log
+
+[Install]
+WantedBy=multi-user.target
